@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-TOKEN = ""
-CHAT_ID = 0
-=======
 import os
 
 TOKEN: str = os.getenv("BOT_TOKEN") or ""
 CHAT_ID: str = os.getenv("CHAT_ID") or ""
->>>>>>> 11a2eaa (Change default settings)
 DEFAULT_COVER_URL = "https://archive.org/download/mbid-d9d7770c-98fa-4caa-a61e-0fd0d3c6ecba/mbid-d9d7770c-98fa-4caa-a61e-0fd0d3c6ecba-35409783506_thumb500.jpg"
 
 # [txthere] is a dedicated spot for song name and artist display
