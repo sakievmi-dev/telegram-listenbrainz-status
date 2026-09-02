@@ -80,7 +80,6 @@ async def init(bot: Bot) -> int:
 
 
 async def get_message_id(bot: Bot) -> int:
-
     if not os.path.isfile(PERSISTS_FILE_PATH):
         return await init(bot)
 
@@ -88,6 +87,7 @@ async def get_message_id(bot: Bot) -> int:
         data = json.load(f)
 
     return data["message_id"]
+
 
 async def main() -> None:
     bot = Bot(token=settings.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
