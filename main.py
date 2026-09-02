@@ -9,20 +9,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-TOKEN = "8900445636:AAE4Tdv4oMShYWTPd3lhiqftt32LxR9Fedo"
-CHAT_ID = -1003126659685
-DEFAULT_COVER_URL = "https://archive.org/download/mbid-d9d7770c-98fa-4caa-a61e-0fd0d3c6ecba/mbid-d9d7770c-98fa-4caa-a61e-0fd0d3c6ecba-35409783506_thumb500.jpg"
+import settings
 
 dispatcher = Dispatcher()
 listen_brainz = liblistenbrainz.ListenBrainz()
-
-text_template = """
-Vsem privet, ya pidorBOT! Ya pokazuvayu shto slushayet STREAMER SAKIEVMI
-
-[txthere]
-
-Bot ezshe ne sdelan idite naxui
-"""
 
 text = ""
 old_text = ""
@@ -30,18 +20,18 @@ old_text = ""
 
 async def get_message_text(listen: liblistenbrainz.Listen | None) -> str:
     if listen and listen.artist_name and listen.track_name:
-        return text_template.replace(
+        return settings.TEXT_TEMPLATE.replace(
             "[txthere]", f"{listen.artist_name} - {listen.track_name}"
         )
 
-    return text_template.replace("[txthere]", "Nothing is playing right now.")
+    return settings.TEXT_TEMPLATE.replace("[txthere]", "Nothing is playing right now.")
 
 
 async def get_listen_cover_url(listen: liblistenbrainz.Listen | None) -> str:
     if listen is not None and getattr(listen, "release_group_mbid", None):
         return f"https://coverartarchive.org/release-group/{listen.release_group_mbid}/front-500"
 
-    return DEFAULT_COVER_URL
+    return settings.DEFAULT_COVER_URL
 
 
 async def change_message(
@@ -59,7 +49,7 @@ async def change_message(
             caption=text,
             parse_mode=ParseMode.HTML,
         ),
-        chat_id=CHAT_ID,
+        chat_id=settings.CHAT_ID,
         message_id=message_id,
     )
 
@@ -69,16 +59,16 @@ async def change_message(
 async def init(bot: Bot) -> int:
     msg = await bot.send_photo(
         caption="Nothing is playing right now",
-        photo=DEFAULT_COVER_URL,
+        photo=settings.DEFAULT_COVER_URL,
         parse_mode=ParseMode.HTML,
-        chat_id=CHAT_ID,
+        chat_id=settings.CHAT_ID,
     )
 
     return msg.message_id
 
 
 async def main() -> None:
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=settings.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     message_id = await init(bot)
 
     while True:
