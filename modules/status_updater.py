@@ -1,3 +1,4 @@
+from modules import music_client
 from modules.formatting import MessageBuilder
 from modules.music_client import CustomListen, MusicServiceClient
 from modules.storage import Storage, State
@@ -28,6 +29,9 @@ class NowPlayingUpdater:
 
         message_builder = MessageBuilder(template=self._text_template)
         message_builder.replace_tag_now_playing(now_playing.listen)
+        message_builder.replace_tag_listen_history(
+            await self._music_service.get_history()
+        )
 
         if self._last_text == message_builder.template:
             return

@@ -25,12 +25,18 @@ class MusicServiceClient:
         self.username: str = username
         self.history_count: int = history_count
 
-        # TODO: make listen history
-        self.history = []
-
     async def get_playing_now(self) -> CustomListen | None:
         listen = lb.get_playing_now(username=self.username)
         if listen is None:
             return None
 
         return convert_to_custom_listen(listen)
+
+    async def get_history(self) -> list[CustomListen]:
+        history = lb.get_listens(username=self.username, count=self.history_count)
+        new_history: list[CustomListen] = []
+
+        for listen in history:
+            new_history.append(convert_to_custom_listen(listen))
+
+        return new_history

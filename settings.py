@@ -9,7 +9,10 @@ DEFAULT_COVER_URL = "https://archive.org/download/mbid-d9d7770c-98fa-4caa-a61e-0
 TEXT_TEMPLATE = """
 Это сообщение автоматизировано с помощью моего Телеграм бота. Здесь вы можете увидеть, что я слушаю в данный момент. Данные получены из моего <a href="https://listenbrainz.org/user/sakievmi/">ListenBrainz</a>.
 
-Сейчас играет:
+📅 История прослушиваний (скробблы):<b>
+{listen_history} </b>
+
+🎧 Сейчас играет:
 <b>{now_playing}</b>
 
 Исходный код: <a href="https://github.com/sakievmi-dev/telegram-listenbrainz-status">GitHub</a>
