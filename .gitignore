@@ -1,3 +1,5 @@
 __pycache__/
 persists.json
+persists.json~
 launch.sh
+test-launch.sh
