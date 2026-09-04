@@ -24,7 +24,7 @@ async def main() -> None:
 
     while True:
         await status_updater.tick()
-        await asyncio.sleep(5)
+        await asyncio.sleep(settings.POLLING_INTERVAL)
 
 
 if __name__ == "__main__":
