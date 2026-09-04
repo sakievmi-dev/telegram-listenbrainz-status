@@ -13,8 +13,10 @@ class MessageBuilder:
     def __init__(self, template: str) -> None:
         self.template = template
 
-    def replace_tag_now_playing(self, listen: liblistenbrainz.Listen):
-        self.template = self.template.replace("{now_playing}", format_listen(listen))
+    def replace_tag_now_playing(self, listen: CustomListen):
+        self.template = self.template.replace(
+            "{now_playing}", format_listen(listen.listen)
+        )
 
     def replace_tag_listen_history(self, listen_history: list[CustomListen]):
         text_history: list[str] = []

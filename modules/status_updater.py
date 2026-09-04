@@ -1,4 +1,3 @@
-from modules import music_client
 from modules.formatting import MessageBuilder
 from modules.music_client import CustomListen, MusicServiceClient
 from modules.storage import Storage, State
@@ -22,13 +21,10 @@ class NowPlayingUpdater:
         self._last_text: str | None = None
 
     async def tick(self):
-        now_playing: CustomListen | None = await self._music_service.get_playing_now()
-
-        if now_playing is None:
-            return
+        now_playing: CustomListen = await self._music_service.get_playing_now()
 
         message_builder = MessageBuilder(template=self._text_template)
-        message_builder.replace_tag_now_playing(now_playing.listen)
+        message_builder.replace_tag_now_playing(now_playing)
         message_builder.replace_tag_listen_history(
             await self._music_service.get_history()
         )

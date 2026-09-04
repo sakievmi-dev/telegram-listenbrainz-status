@@ -8,7 +8,7 @@ lb = liblistenbrainz.ListenBrainz()
 
 @dataclass()
 class CustomListen:
-    listen: liblistenbrainz.Listen
+    listen: liblistenbrainz.Listen | None
     cover_url: str
 
 
@@ -25,10 +25,11 @@ class MusicServiceClient:
         self.username: str = username
         self.history_count: int = history_count
 
-    async def get_playing_now(self) -> CustomListen | None:
+    async def get_playing_now(self) -> CustomListen:
         listen = lb.get_playing_now(username=self.username)
         if listen is None:
-            return None
+            listen = CustomListen(listen=None, cover_url=settings.DEFAULT_COVER_URL)
+            return listen
 
         return convert_to_custom_listen(listen)
 
