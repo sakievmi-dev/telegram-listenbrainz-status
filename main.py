@@ -6,6 +6,7 @@ from modules.storage import Storage
 from modules.telegram import TelegramClient
 
 import settings
+import logging
 
 telegram_client = TelegramClient(token=settings.TOKEN, chat_id=int(settings.CHAT_ID))
 music_service = MusicServiceClient(username="sakievmi")
@@ -16,6 +17,12 @@ status_updater = NowPlayingUpdater(
     music_service_client=music_service,
     storage=storage,
     text_template=settings.TEXT_TEMPLATE,
+)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[logging.FileHandler("app.log"), logging.StreamHandler()],
 )
 
 

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import liblistenbrainz
 import settings
+import logging
 
 lb = liblistenbrainz.ListenBrainz()
 
@@ -24,20 +25,35 @@ class MusicServiceClient:
     def __init__(self, username: str, history_count: int = 5):
         self.username: str = username
         self.history_count: int = history_count
+        self.logging = logging.getLogger(__name__)
 
     async def get_playing_now(self) -> CustomListen:
-        listen = lb.get_playing_now(username=self.username)
-        if listen is None:
-            listen = CustomListen(listen=None, cover_url=settings.DEFAULT_COVER_URL)
-            return listen
+        self.logging.info(f"Getting 'playing now' listen from {self.username}")
 
-        return convert_to_custom_listen(listen)
+        try:
+            listen = lb.get_playing_now(username=self.username)
+            if listen is not None:
+                self.logging.info("ListenBrainz returned None")
+                return convert_to_custom_listen(listen)
+        except Exception as e:
+            self.logging.error(f"ListenBrainz returned an error: {e}. Returning None.")
+
+        listen = CustomListen(listen=None, cover_url=settings.DEFAULT_COVER_URL)
+        return listen
 
     async def get_history(self) -> list[CustomListen]:
-        history = lb.get_listens(username=self.username, count=self.history_count)
+        self.logging.info(
+            f"Getting recent listens ({self.history_count} latest) from {self.username}"
+        )
+
         new_history: list[CustomListen] = []
 
-        for listen in history:
-            new_history.append(convert_to_custom_listen(listen))
+        try:
+            history = lb.get_listens(username=self.username, count=self.history_count)
+
+            for listen in history:
+                new_history.append(convert_to_custom_listen(listen))
+        except:
+            self.logging.error("An error occured when creating recent listens list.")
 
         return new_history

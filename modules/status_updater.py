@@ -2,7 +2,9 @@ from modules.formatting import MessageBuilder
 from modules.music_client import CustomListen, MusicServiceClient
 from modules.storage import Storage, State
 from modules.telegram import TelegramClient
+
 import settings
+import logging
 
 
 class NowPlayingUpdater:
@@ -19,8 +21,10 @@ class NowPlayingUpdater:
         self._message_id: int
         self._text_template: str = text_template
         self._last_text: str | None = None
+        self.logger = logging.getLogger(__name__)
 
     async def tick(self):
+        self.logger.info("Ticking...")
         now_playing: CustomListen = await self._music_service.get_playing_now()
 
         message_builder = MessageBuilder(template=self._text_template)
@@ -30,21 +34,31 @@ class NowPlayingUpdater:
         )
 
         if self._last_text == message_builder.template:
+            self.logger.info("Last text is identical to current. Returning.")
             return
 
-        await self._telegram.update_message(
-            message_id=self._message_id,
-            text=message_builder.template,
-            cover_url=now_playing.cover_url,
-        )
+        try:
+            await self._telegram.update_message(
+                message_id=self._message_id,
+                text=message_builder.template,
+                cover_url=now_playing.cover_url,
+            )
+        except:
+            pass
 
         self._last_text = message_builder.template
 
+        self.logger.info("Tick completed")
+
     async def init(self):
+        self.logger.info("Initializing...")
+
         self._storage.load_state()
         state = self._storage.state
 
         if state is None:
+            self.logger.info("State file is empty. Creating new file.")
+
             message_id = await self._telegram.send_initial_message(
                 cover_url=settings.DEFAULT_COVER_URL
             )
